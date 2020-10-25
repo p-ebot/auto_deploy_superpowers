@@ -69,8 +69,8 @@ Job:
           name: lint-frontend
           command: |
             cd backend
-            npi i
-            npm run lint   
+            npi install
+            npm run build   
   test:
     docker:
       - image: circleci/node:13.8.0
@@ -82,7 +82,7 @@ Job:
           name: test-frontend
           command: |
             cd backend
-            npi i
+            npi install
             npm run test    
   analyze:
     docker:
