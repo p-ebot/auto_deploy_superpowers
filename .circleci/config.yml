@@ -35,7 +35,7 @@ jobs:
           command: |
             cd frontend
             npm install
-            npm run lint
+            npm run build
   test:
     docker:
       - image: circleci/node:13.8.0
