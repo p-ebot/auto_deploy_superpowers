@@ -58,7 +58,20 @@ workflows:
             - test
 #  build-frontend:
 Job:
-  build-frontend:
+  build:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore-cache:
+          keys: [build-frontend]
+      - run:
+          name: lint-frontend
+          command: |
+            cd backend
+            npi i
+            npm run lint   
+  test:
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -66,27 +79,24 @@ Job:
       - restore-cache:
           keys: [build-frontent]
       - run:
-          name: lint-frontrnd
-          command |
+          name: test-frontend
+          command: |
             cd backend
             npi i
-            npm run lint   
-      #- run: npm i
-      #- run: npm run lint
-    test:
-      docker:
-        - image: circleci/node:13.8.0
-      steps:
-        - checkout
-        - run: npm i
-        - run: npm run test
-    analyze:
-      docker:
-        - image: circleci/node:13.8.0
-      steps:
-        - checkout
-        - run: npm audit
-
+            npm run test    
+  analyze:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore-cache:
+          keys: [build-frontent]
+      - run:
+          name: analyze-frontend
+          command: |
+            cd backend
+            npi i
+            npm audit
 #  build-frontend:
 
 #  test-frontend:
