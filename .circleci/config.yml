@@ -65,12 +65,8 @@ Job:
       - checkout
       - restore-cache:
           keys: [build-frontend]
-      - run:
-          name: lint-frontend
-          command: |
-            cd backend
-            npi install
-            npm run build   
+      - run: npi i
+      - run: npm run lint 
   test:
     docker:
       - image: circleci/node:13.8.0
@@ -78,12 +74,8 @@ Job:
       - checkout
       - restore-cache:
           keys: [build-frontent]
-      - run:
-          name: test-frontend
-          command: |
-            cd backend
-            npi install
-            npm run test    
+      - run: npi i
+      - run: npm run lint    
   analyze:
     docker:
       - image: circleci/node:13.8.0
@@ -91,12 +83,8 @@ Job:
       - checkout
       - restore-cache:
           keys: [build-frontent]
-      - run:
-          name: analyze-frontend
-          command: |
-            cd backend
-            npi i
-            npm audit
+      - run: npi i
+      - run: npm run lint 
 #  build-frontend:
 
 #  test-frontend:
