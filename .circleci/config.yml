@@ -63,14 +63,14 @@ Job:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      -restore-cache:
-         keys: [build-frontent]
-      -run:
-         name: lint-frontrnd
-         command |
-           cd backend
-           npi i
-           npm run lint   
+      - restore-cache:
+          keys: [build-frontent]
+      - run:
+          name: lint-frontrnd
+          command |
+            cd backend
+            npi i
+            npm run lint   
       #- run: npm i
       #- run: npm run lint
     test:
