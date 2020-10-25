@@ -25,26 +25,39 @@
 version: 2.1
 
 jobs:
-  build:
+  build-frontend:
     docker:
       - image: circleci/node:13.8.0
     steps:
-      - checkout
-      - run: npm i
-      - run: npm run lint
+      checkout
+      - run
+          name: "build-frontend"
+          command: |
+            cd frontend
+            npm install
+            npm run lint
   test:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - run: npm i
-      - run: npm run test
+      - run: 
+          name: "test-frontend"
+          command: |
+            cd frontend
+            npm install
+            run: npm run test
   analyze:
     docker:
       - image: circleci/node:13.8.0
-    steps:
+    steps
       - checkout
-      - run: npm audit
+      - run: 
+          name: "analyze-frontend"
+          command: |
+            cd frontend
+            npm install
+            npm audit
 
 workflows:
   my_workflow:
@@ -73,7 +86,7 @@ Job:
     steps:
       - checkout
       - restore-cache:
-          keys: [build-frontent]
+          keys: [test-frontent]
       - run: npi i
       - run: npm run lint    
   analyze:
@@ -82,7 +95,7 @@ Job:
     steps:
       - checkout
       - restore-cache:
-          keys: [build-frontent]
+          keys: [analyze-frontent]
       - run: npi i
       - run: npm run lint 
 #  build-frontend:
