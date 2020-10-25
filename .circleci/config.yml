@@ -24,65 +24,65 @@
 
 version: 2.1
 
-  jobs:
-    build:
-      docker:
-        - image: circleci/node:13.8.0
-      steps:
-        - checkout
-        - run: npm i
-        - run: npm run lint
-    test:
-      docker:
-        - image: circleci/node:13.8.0
-      steps:
-        - checkout
-        - run: npm i
-        - run: npm run test
-    analyze:
-      docker:
-        - image: circleci/node:13.8.0
-      steps:
-        - checkout
-        - run: npm audit
+jobs:
+  build:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run lint
+  test:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run test
+  analyze:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: npm audit
 
-  workflows:
-    my_workflow:
-      jobs:
-        - build
-        - test:
-            requires:
-              - build
-        - analyze:
-            requires:
-              - test
-  #  build-frontend:
+workflows:
+  my_workflow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - analyze:
+          requires:
+            - test
+#  build-frontend:
 
-  #  build-frontend:
+#  build-frontend:
 
-  #  test-frontend:
+#  test-frontend:
 
-  #  est-backend:
+#  est-backend:
 
-  #  can-frontend:
+#  can-frontend:
 
-  #  scan-backend:
+#  scan-backend:
 
-  #  deploy-infrastructure:
+#  deploy-infrastructure:
 
-  #  configure-infrastructure:
+#  configure-infrastructure:
 
-  #  run-migrations:
+#  run-migrations:
 
-  #  deploy-frontend:
+#  deploy-frontend:
 
-  #  deploy-backend:  
+#  deploy-backend:  
 
-  #  smoke-test:
+#  smoke-test:
 
-  #  cloudfront-update:
+#  cloudfront-update:
 
-  workflows:
-    default:
-      jobs:
-        - hello-world
+workflows:
+  default:
+    jobs:
+      - hello-world
