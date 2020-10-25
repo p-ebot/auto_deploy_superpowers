@@ -23,7 +23,7 @@
     #        echo "Hello World"
 
 version: 2.1
-
+#Build-frontend
 jobs:
   build-frontend:
     docker:
@@ -62,7 +62,7 @@ jobs:
 workflows:
   my_workflow:
     jobs:
-      - build-frontend:
+      - build:
       - test:
           requires:
             - build
@@ -70,34 +70,7 @@ workflows:
           requires:
             - test
 #  build-frontend:
-Job:
-  build:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore-cache:
-          keys: [build-frontend]
-      - run: npi i
-      - run: npm run lint 
-  test:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore-cache:
-          keys: [test-frontent]
-      - run: npi i
-      - run: npm run lint    
-  analyze:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - restore-cache:
-          keys: [analyze-frontent]
-      - run: npi i
-      - run: npm run lint 
+
 #  build-frontend:
 
 #  test-frontend:
