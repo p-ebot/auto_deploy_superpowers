@@ -62,7 +62,7 @@ jobs:
 workflows:
   my_workflow:
     jobs:
-      - build
+      - build-frontend:
       - test:
           requires:
             - build
