@@ -38,7 +38,6 @@ jobs:
             npm run build
   
 #  build-backend:
-jobs:
   build:
     docker:
       - image: circleci/node:13.8.0
@@ -115,13 +114,13 @@ jobs:
 
 #  cloudfront-update:
 
-  workflows:
-    my_workflow:
-      jobs:
-        - build
-        - test:
-            requires:
-              - build
-        - analyze:
-            requires:
-              - test
+workflows:
+  my_workflow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - analyze:
+          requires:
+            - test
