@@ -24,7 +24,7 @@
 
 version: 2.1
 jobs:
-  Build-frontend:
+  build-frontend:
     docker:
       - image: circleci/node:13.8.0
     steps:
