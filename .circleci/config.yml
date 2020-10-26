@@ -24,7 +24,7 @@
 
 version: 2.1
 jobs:
-#Build-frontend
+  Build-frontend:
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -36,7 +36,7 @@ jobs:
             npm install
             npm run build
   
-#  build-backend:
+  build-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -47,7 +47,7 @@ jobs:
             cd backendend
             npm install
             npm run build
-#  test-frontend:
+  test-frontend:
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -59,7 +59,7 @@ jobs:
             npm install
             npm run test
 
-#  test-backend:
+  test-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -71,7 +71,7 @@ jobs:
             npm install
             npm run test
 
-#  scan-frontend:
+  scan-frontend:
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -82,7 +82,7 @@ jobs:
             cd frontend
             npm install
             npm audit fix --audit-level=critical --force
-#  scan-backend:
+  scan-backend:
     docker:
       - image: circleci/node:13.8.0
     steps:
