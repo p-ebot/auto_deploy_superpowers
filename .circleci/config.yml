@@ -23,9 +23,8 @@
     #        echo "Hello World"
 
 version: 2.1
-#Build-frontend
 jobs:
-  build:
+#Build-frontend
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -38,7 +37,6 @@ jobs:
             npm run build
   
 #  build-backend:
-  build:
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -50,33 +48,30 @@ jobs:
             npm install
             npm run build
 #  test-frontend:
-  test:
-      docker:
-        - image: circleci/node:13.8.0
-      steps:
-        - checkout
-        - run: 
-            name: "test-frontend"
-            command: |
-              cd frontend
-              npm install
-              npm run test
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: 
+          name: "test-frontend"
+          command: |
+            cd frontend
+            npm install
+            npm run test
 
 #  test-backend:
-  test:
-      docker:
-        - image: circleci/node:13.8.0
-      steps:
-        - checkout
-        - run: 
-            name: "test-backend"
-            command: |
-              cd backend
-              npm install
-              npm run test
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: 
+          name: "test-backend"
+          command: |
+            cd backend
+            npm install
+            npm run test
 
 #  scan-frontend:
-  analyze:
     docker:
       - image: circleci/node:13.8.0
     steps:
@@ -88,7 +83,6 @@ jobs:
             npm install
             npm audit fix --audit-level=critical --force
 #  scan-backend:
-  analyze:
     docker:
       - image: circleci/node:13.8.0
     steps:
