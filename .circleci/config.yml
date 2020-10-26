@@ -36,17 +36,47 @@ jobs:
             cd frontend
             npm install
             npm run build
-  test:
+  
+#  build-backend:
+jobs:
+  build:
     docker:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - run: 
-          name: "test-frontend"
+      - run:
+          name: "build-backend"
           command: |
-            cd frontend
+            cd backendend
             npm install
-            npm run test
+            npm run build
+#  test-frontend:
+  test:
+      docker:
+        - image: circleci/node:13.8.0
+      steps:
+        - checkout
+        - run: 
+            name: "test-frontend"
+            command: |
+              cd frontend
+              npm install
+              npm run test
+
+#  test-backend:
+  test:
+      docker:
+        - image: circleci/node:13.8.0
+      steps:
+        - checkout
+        - run: 
+            name: "test-backend"
+            command: |
+              cd backend
+              npm install
+              npm run test
+
+#  scan-frontend:
   analyze:
     docker:
       - image: circleci/node:13.8.0
@@ -58,28 +88,18 @@ jobs:
             cd frontend
             npm install
             npm audit fix --audit-level=critical --force
-
-workflows:
-  my_workflow:
-    jobs:
-      - build
-      - test:
-          requires:
-            - build
-      - analyze:
-          requires:
-            - test
-#  build-frontend:
-
-#  build-frontend:
-
-#  test-frontend:
-
-#  est-backend:
-
-#  can-frontend:
-
 #  scan-backend:
+  analyze:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: 
+          name: "analyze-backend"
+          command: |
+            cd backend
+            npm install
+            npm audit fix --audit-level=critical --force
 
 #  deploy-infrastructure:
 
@@ -95,7 +115,13 @@ workflows:
 
 #  cloudfront-update:
 
-#workflows:
-  #default:
-    #jobs:
-      #- hello-world
+workflows:
+  my_workflow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - analyze:
+          requires:
+            - test
