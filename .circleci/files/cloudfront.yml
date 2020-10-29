@@ -2,8 +2,8 @@ Description: >
   Cloudfront distribution for UdaPeople.
 
 Parameters:
-  WorkflowID: 
-     Description: kgugyeg7980husouh
+  WorkflowID: kgugyeg7980husouh
+     Description: 
      Type: String
 
 
