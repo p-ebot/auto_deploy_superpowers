@@ -4,11 +4,10 @@ Description: >
 Parameters:
   WorkflowID: kgugyeg7980husouh
     Description: Unique identifier.
-      Type: String
+    Type: String
 
 
 Resources:
-  
   CloudFrontOriginAccessIdentity:
     Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
     Properties:
