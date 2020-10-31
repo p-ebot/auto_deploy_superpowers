@@ -1,13 +1,13 @@
 Description: >
   Cloudfront distribution for UdaPeople.
-
 Parameters:
-  WorkflowID: kgugyeg7980husouh
+  WorkflowID:
     Description: Unique identifier.
     Type: String
 
 
 Resources:
+  
   CloudFrontOriginAccessIdentity:
     Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
     Properties:
