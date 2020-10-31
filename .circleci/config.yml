@@ -98,7 +98,7 @@ jobs:
     docker:
        - image: amazon/aws-cli
     steps:
-      -checkout
+      - checkout
       - run:
           name:  back-end infrastructure
           command: |
