@@ -115,8 +115,35 @@ jobs:
               --stack-name "udapeople-frontend-prod-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople      
+  # get instance ip    
+  get_instance_ip:
+    environment:
+      ID: arns3
+    docker:
+      - image: amazon/aws-cli
+    steps:
+      - checkout
+      - run:
+          name: Get backend ip address 
+          command: |
+            aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters "Name=tag:project,Values=udapeople" \
+              --output text >> inventory
+            
+            export BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:project,Values=udapeople" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)  
+      - run:
+          name: store the backend ip address to memstash so that frontend can use it. 
+          command: |
+            chmod 777 bkmemstash.sh
+            ./bkmemstash.sh
+            cat inventory             
 
 #  configure-infrastructure:
+    
 
 #  run-migrations:
 
@@ -142,4 +169,7 @@ workflows:
       - scan-frontend:
           requires: [test-frontend]
       - deploy-infrastructure:
-          requires: [ scan-backend, scan-frontend]    
+          requires: [ scan-backend, scan-frontend]   
+      - get_instance_ip:
+          requires:
+            - deploy-infrastructure     
