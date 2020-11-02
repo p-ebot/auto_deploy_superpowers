@@ -116,7 +116,7 @@ jobs:
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople      
   # get instance ip    
-  get_instance_ip:
+  get-instance-ip:
     environment:
       ID: arns3
     docker:
@@ -210,9 +210,9 @@ workflows:
           requires: [test-frontend]
       - deploy-infrastructure:
           requires: [ scan-backend, scan-frontend]   
-      - get_instance_ip:
+      - get-instance-ip:
           requires:
             - deploy-infrastructure     
-      - configure_infrastructure:
+      - configure-infrastructure:
           requires:
-            - get_instance_ip      
+            - get-instance-ip      
