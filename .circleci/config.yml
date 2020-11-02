@@ -181,7 +181,7 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
             cd .circleci/ansible
             ansible-playbook -i inventory.txt main.yml
-      - destroy-environment
+      
 
     
 
