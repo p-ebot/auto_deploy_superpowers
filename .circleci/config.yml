@@ -213,3 +213,6 @@ workflows:
       - get_instance_ip:
           requires:
             - deploy-infrastructure     
+      - configure_infrastructure:
+          requires:
+            - get_instance_ip      
