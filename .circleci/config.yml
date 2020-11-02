@@ -138,8 +138,8 @@ jobs:
       - run:
           name: store the backend ip address to memstash so that frontend can use it. 
           command: |
-            chmod 777 bkmemstash.sh
-            ./bkmemstash.sh
+            chmod 777 backendmemstash.sh
+            ./backendmemstash.sh
             cat inventory             
 
 #  configure-infrastructure:
