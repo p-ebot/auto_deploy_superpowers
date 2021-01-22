@@ -193,6 +193,8 @@ jobs:
           name: run db migration
           command: |
             cd backend
+            npm install
+            npm i migrations
             npm run migrations
       - run: 
           name: Save result value
