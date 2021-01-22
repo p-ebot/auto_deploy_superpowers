@@ -196,7 +196,7 @@ jobs:
           name: run database migrations
           command: |
             touch run_migrations
-            cd backend && npm migration > run migrations
+            cd backend && npm migration > run_migrations
 
 
 #  deploy-frontend:
