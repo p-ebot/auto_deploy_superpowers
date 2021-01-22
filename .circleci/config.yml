@@ -191,8 +191,8 @@ jobs:
       - checkout
       - run:
           name: run db migration
-          cd backend
-          npm run migrations
+            cd backend
+            npm run migrations
       - run: 
           name: Save result value
           command: |
