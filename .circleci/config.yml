@@ -190,10 +190,13 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Migrate db
+         cd backend
+         npm install
+      - run: 
+          name: run database migrations
           command: |
-            cd backend
-            npm run migrations
+            touch run_migrations
+            cd backend && npm migration > run migrations
 
 
 #  deploy-frontend:
