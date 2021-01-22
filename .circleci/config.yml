@@ -190,10 +190,9 @@ jobs:
     steps:
       - checkout
       - run:
-         cd backend
-         npm install
+          cd backend && npm install
       - run: 
-          name: run database migrations
+          name: run migrations
           command: |
             touch run_migrations
             cd backend && npm run migrations > run_migrations
