@@ -227,7 +227,7 @@ workflows:
       - configure-infrastructure:
           requires:
             - get-instance-ip      
-      - run-migration:
+      - run-migrations:
           requires:
             - configure-infrastructure
       
