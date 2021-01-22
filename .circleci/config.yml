@@ -187,7 +187,7 @@ jobs:
   run-migrations:
     docker:
       - image: python:3.7-alpine3.11
-      steps:
+    steps:
       - checkout
       - install-dependencies:
           layer: "backend"
