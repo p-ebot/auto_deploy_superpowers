@@ -189,8 +189,6 @@ jobs:
       - image: python:3.7-alpine3.11
     steps:
       - checkout
-      - install-dependencies:
-          layer: "backend"
       - run:
           name: Migrate db
           command: |
