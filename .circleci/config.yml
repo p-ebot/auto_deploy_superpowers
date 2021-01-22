@@ -183,9 +183,20 @@ jobs:
             ansible-playbook -i inventory.txt main.yml
       
 
-    
-
 #  run-migrations:
+  run-migrations
+    docker:
+      - image: python:3.7-alpine3.11
+      steps:
+      - checkout
+      - install-dependencies:
+          layer: "backend"
+      - run:
+          name: Migrate db
+          command: |
+            cd backend
+            npm run migrations
+
 
 #  deploy-frontend:
 
