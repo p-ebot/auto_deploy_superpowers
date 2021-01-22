@@ -186,21 +186,18 @@ jobs:
 #  run-migrations:
   run-migrations:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: circleci/node:latest
     steps:
       - checkout
       - run:
-          cd backend && npm install
-      - run: 
-          name: run migrations
-          command: |
-            touch run_migrations
-            cd backend && npm run migrations > run_migrations
+          name: run db migration
+          cd backend
+          npm run migrations
       - run: 
           name: Save result value
           command: |
             cd backend
-            if grep "executed successfully" run_migrations.txt
+            if grep "executed successfully" migration_results.txt
             then
             curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request PUT --data "true" https://api.memstash.io/values/<< pipeline.id >>_migrations
             else
