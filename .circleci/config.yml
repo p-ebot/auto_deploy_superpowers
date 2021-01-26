@@ -236,9 +236,9 @@ jobs:
       - run: 
           name: deploy frontend objects
           command: |
-          cd frontend
-          npm install
-          npm run build
+            cd frontend
+            npm install
+            npm run build
 
       - run: 
           name: copy to s3
