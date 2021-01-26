@@ -224,7 +224,7 @@ jobs:
             curl -sL https://rpm.nodesource.com/setup_lts.x | bash -
             yum -y install nodejs
             tar -C backend -czvf artifact.tar.gz .
-            src: /root/project/artifact.tar.gz
+            
 
       - run: 
           name: get backend url
