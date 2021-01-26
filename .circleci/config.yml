@@ -211,6 +211,45 @@ jobs:
 
 
 #  deploy-frontend:
+  deploy-frontend:
+    docker:
+    # docker image that supoorts AWS CLI
+      - image: amazon/aws-cli
+    steps: 
+      - checkout
+      - run: 
+          name: install dependencies 
+          command: |
+            yum -y install nodejs
+            yum -y install tar gzip 
+            tar -C backend -czvf artifact.tar.gz .
+            src: /root/project/artifact.tar.gz
+
+      - run: 
+          name: get backend url
+          command: |   
+            BACKEND_IP=`cat .circleci/ansible/inventory.txt | head -2 | tail -1`
+            echo "BACKEND_IP: ${BACKEND_IP}"
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}" >> "frontend/.env"   
+
+      - run: 
+          name: deploy frontend objects
+          command: |
+          cd frontend
+          npm install
+          npm run build
+
+      - run: 
+          name: copy to s3
+          command: |
+             aws s3 cp ./frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID}/ --recursive
+      - revert-migrations: 
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - destroy-environment: 
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}                    
+ 
+
 
 #  deploy-backend:  
 
