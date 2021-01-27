@@ -229,7 +229,7 @@ jobs:
       - run: 
           name: get backend url
           command: |   
-            BACKEND_IP=`cat .circleci/ansible/inventory.txt | head -2 | tail -1`
+            BACKEND_IP=`cat /inventory.txt | head -2 | tail -1`
             echo "BACKEND_IP: ${BACKEND_IP}"
             export API_URL="http://${BACKEND_IP}:3030"
             echo "${API_URL}" >> "frontend/.env"   
