@@ -240,7 +240,7 @@ jobs:
             npm install
             npm run build
       - run: 
-          name: deploy-frontend     
+          name: deploy-frontend objects    
           command: |
              aws s3 cp ./frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID}/ --recursive
 
@@ -308,4 +308,5 @@ workflows:
             - configure-infrastructure
       - deploy-frontend:
           requires: [run-migrations]      
-      
+      - deploy-backend:
+          requires: [run-migrations]
