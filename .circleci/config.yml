@@ -257,7 +257,7 @@ jobs:
   deploy-frontend:
     docker:
     # docker image that supoorts AWS CLI
-      - image: amazon/aws-cli
+      - image: python:3.7-alpine3.11
     steps: 
       - checkout
       - run: 
@@ -309,7 +309,7 @@ jobs:
       - run: 
           name: Deploy backend
           command: |
-            INSTANCE_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/instance_ip)
+            INSTANCE_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://api.memstash.io/values/instance_ip)
             echo ${INSTANCE_IP}
             cd .circleci/ansible/
             ls
