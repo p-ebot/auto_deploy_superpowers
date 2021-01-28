@@ -38,11 +38,11 @@ commands:
           when: on_fail
           command: |
             # Delete files from bucket
-            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID}/ --recursive
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive
             # Delete front end stack
-            aws cloudformation delete-stack --stack-name udacity-frontend-${CIRCLE_WORKFLOW_ID}
+            aws cloudformation delete-stack --stack-name udacity-frontend-${CIRCLE_WORKFLOW_ID:0:7}
             # Delete back end stack
-            aws cloudformation delete-stack --stack-name udacity-backend-${CIRCLE_WORKFLOW_ID}
+            aws cloudformation delete-stack --stack-name udacity-backend-${CIRCLE_WORKFLOW_ID:0:7}
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
     parameters:
@@ -54,7 +54,7 @@ commands:
           when: on_fail
           command: |
             # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            MIGRATION_RESULT=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/migration_result)
+            MIGRATION_RESULT=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://api.memstash.io/values/migration_result)
             if(( ${MIGRATION_RESULT}==1 )); 
             then
               cd ~/project/backend
@@ -285,7 +285,7 @@ jobs:
       - run: 
           name: deploy-frontend objects    
           command: |
-             aws s3 cp ./frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID}/ --recursive
+             aws s3 cp ./frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive
 
       - destroy-environment
      
