@@ -224,7 +224,7 @@ jobs:
             curl -sL https://rpm.nodesource.com/setup_lts.x | bash -
             yum -y install nodejs
             tar -C backend -czvf artifact.tar.gz .
-            
+            pip3 install awscli
 
       - run: 
           name: get backend url
@@ -239,14 +239,45 @@ jobs:
             cd frontend
             npm install
             npm run build
-            
+      - run: 
+          name: deploy-frontend     
+          command: |
+             aws s3 cp ./frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID}/ --recursive
 
-                      
- 
-
+      - destroy-environment
+      - revert-migration
+             
 
 #  deploy-backend:  
+  deploy-backend:
+    docker:
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["df:c3:e1:85:72:38:02:fb:7d:af:59:c6:90:da:c1:7b"]
 
+      - run:
+          name: Install dependencies
+          command: |
+            apk add ansible
+            apk add curl
+            pip3 install aswcli
+
+      - run: 
+          name: Deploy backend
+          command: |
+            INSTANCE_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/instance_ip)
+            echo ${INSTANCE_IP}
+            cd .circleci/ansible/
+            ls
+            echo ${INSTANCE_IP} >> ./inventory.txt
+            cat ./inventory.txt
+            ansible-playbook -i ./inventory.txt deploy-backend.yml
+      - destroy-environment  
+      - revert-migrations  
+
+                      
 #  smoke-test:
 
 #  cloudfront-update:
