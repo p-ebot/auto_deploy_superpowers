@@ -267,7 +267,7 @@ jobs:
             curl -sL https://rpm.nodesource.com/setup_lts.x | bash -
             yum -y install nodejs
             tar -C backend -czvf artifact.tar.gz .
-            pip3 install awscli
+            
 
       - run: 
           name: get backend url
@@ -305,8 +305,7 @@ jobs:
           command: |
             apk add ansible
             apk add curl
-            pip3 install aswcli
-
+            
       - run: 
           name: Deploy backend
           command: |
