@@ -30,7 +30,6 @@ orbs:
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-    parameters:
       # Add parameter here   
     steps:
       - run:
@@ -45,7 +44,6 @@ commands:
             aws cloudformation delete-stack --stack-name udacity-backend-${CIRCLE_WORKFLOW_ID:0:7}
   revert-migrations:
     description: Revert the last migration if successfully run in the current workflow.
-    parameters:
       # Add parameter here     
     steps:
       - run:
@@ -263,29 +261,27 @@ jobs:
       - run: 
           name: install dependencies 
           command: |
-            yum -y install tar gzip 
-            curl -sL https://rpm.nodesource.com/setup_lts.x | bash -
-            yum -y install nodejs
-            tar -C backend -czvf artifact.tar.gz .
+            apk add --no-cache curl
+            apk add --no-cache --upgrade bash
+            apk add --no-cache --update npm
+            pip3 install awscli
             
 
-      - run: 
-          name: get backend url
-          command: |   
-            echo "BACKEND_IP: ${BACKEND_IP}"
-            export API_URL="http://${BACKEND_IP}:3030"
-            echo "${API_URL}" >> "frontend/.env"   
-
-      - run: 
-          name: deploy frontend objects
+      - run:
+          name: Build the frontend
           command: |
+            PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
+            echo ${PUBLIC_DNS}
+            export API_URL="http://${PUBLIC_DNS}:3030"
+            echo API_URL=${API_URL}
             cd frontend
             npm install
             npm run build
+
       - run: 
-          name: deploy-frontend objects    
+          name: Copy built frontend files to the S3 bucket
           command: |
-             aws s3 cp ./frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive
+            aws s3 cp ./frontend/dist s3://udapeople-s3bucket-${CIRCLE_WORKFLOW_ID}/ --recursive  
 
       - destroy-environment
      
@@ -303,8 +299,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            apk add ansible
-            apk add curl
+            apk add --no-cache curl
+            apk add --no-cache --upgrade bash
+            apk add --no-cache --update ansible
+            apk add --no-cache openssh-client
+            pip3 install awscli
             
       - run: 
           name: Deploy backend
@@ -313,9 +312,14 @@ jobs:
             echo ${INSTANCE_IP}
             cd .circleci/ansible/
             ls
-            echo ${INSTANCE_IP} >> ./inventory.txt
-            cat ./inventory.txt
-            ansible-playbook -i ./inventory.txt deploy-backend.yml
+            echo ${INSTANCE_IP} >> ./inventory
+            cat ./inventory
+      - run:
+          name: Configure backend Server
+          command: |
+            printenv >> ./backend/.env
+            cd .circleci/ansible/
+            ansible-playbook -i ./inventory deploy.yml      
       - destroy-environment  
       
 
