@@ -277,11 +277,10 @@ jobs:
             cd frontend
             npm install
             npm run build
-
       - run: 
           name: Copy built frontend files to the S3 bucket
           command: |
-            aws s3 cp ./frontend/dist s3://udapeople-s3bucket-${CIRCLE_WORKFLOW_ID}/ --recursive  
+            aws s3 cp ./frontend/dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7}/ --recursive  
 
       - destroy-environment
      
@@ -313,13 +312,7 @@ jobs:
             cd .circleci/ansible/
             ls
             echo ${INSTANCE_IP} >> ./inventory
-            cat ./inventory
-      - run:
-          name: Configure backend Server
-          command: |
-            printenv >> ./backend/.env
-            cd .circleci/ansible/
-            ansible-playbook -i ./inventory deploy.yml      
+            cat ./inventory      
       - destroy-environment  
       
 
