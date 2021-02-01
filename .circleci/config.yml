@@ -331,9 +331,9 @@ jobs:
             apk add --no-cache --update ansible
             apk add --no-cache openssh-client
             pip3 install awscli
-      - run :
+      - run:
           name: smoke-test on frontend        
-          commands: |
+          command: |
             URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.ap-south-1.amazonaws.com/#/employees"            
             if curl -s ${URL} | grep "Welcome"
             then
@@ -342,8 +342,8 @@ jobs:
               return 0
             fi   
       - run:
-            name: Smoke test on backend
-            command: |
+          name: Smoke test on backend
+          command: |
               PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
               echo ${PUBLIC_DNS}
               if curl -s "http://${PUBLIC_DNS}:3030/api/status" | grep "ok"
