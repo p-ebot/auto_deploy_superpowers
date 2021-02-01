@@ -344,14 +344,13 @@ jobs:
       - run:
           name: Smoke test on backend
           command: |
-              PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
-              echo ${PUBLIC_DNS}
-              if curl -s "http://${PUBLIC_DNS}:3030/api/status" | grep "ok"
-              then
-                return 0
-              else
-                return 1
-              fi      
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.ap-south-1.amazonaws.com/#/employees"            
+            if curl -s ${URL} | grep "Welcome"
+            then
+            return 1
+            else
+            return 0
+            fi    
 
       - destroy-environment         
 #  cloudfront-update:
