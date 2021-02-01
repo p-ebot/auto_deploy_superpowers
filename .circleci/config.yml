@@ -318,42 +318,42 @@ jobs:
 
                       
 #  smoke-test:
-smoke-test: 
-  docker: 
-    - image: python:3.7-alpine3.11
-  steps:
-    - checkout
-    - run: 
-        name: install dependencies
-        command: |
-          apk add --no-cache curl
-          apk add --no-cache --upgrade bash
-          apk add --no-cache --update ansible
-          apk add --no-cache openssh-client
-          pip3 install awscli
-    - run :
-        name: smoke-test on frontend        
-        commands: |
-          URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.ap-south-1.amazonaws.com/#/employees"            
-          if curl -s ${URL} | grep "Welcome"
-          then
-            return 1
-          else
-            return 0
-          fi   
-    - run:
-          name: Smoke test on backend
+  smoke-test: 
+    docker: 
+      - image: python:3.7-alpine3.11
+    steps:
+      - checkout
+      - run: 
+          name: install dependencies
           command: |
-            PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
-            echo ${PUBLIC_DNS}
-            if curl -s "http://${PUBLIC_DNS}:3030/api/status" | grep "ok"
+            apk add --no-cache curl
+            apk add --no-cache --upgrade bash
+            apk add --no-cache --update ansible
+            apk add --no-cache openssh-client
+            pip3 install awscli
+      - run :
+          name: smoke-test on frontend        
+          commands: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.ap-south-1.amazonaws.com/#/employees"            
+            if curl -s ${URL} | grep "Welcome"
             then
-              return 0
-            else
               return 1
-            fi      
+            else
+              return 0
+            fi   
+      - run:
+            name: Smoke test on backend
+            command: |
+              PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
+              echo ${PUBLIC_DNS}
+              if curl -s "http://${PUBLIC_DNS}:3030/api/status" | grep "ok"
+              then
+                return 0
+              else
+                return 1
+              fi      
 
-    - destroy-environment         
+      - destroy-environment         
 #  cloudfront-update:
   promote_to_production_and_clean_up:
     docker:
