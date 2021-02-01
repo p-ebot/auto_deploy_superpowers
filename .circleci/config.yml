@@ -354,7 +354,7 @@ jobs:
 
       - destroy-environment         
 #  cloudfront-update:
-  promote_to_production_and_clean_up:
+  production_deployment_and_clean_up:
     docker:
       - image: amazon/aws-cli
     steps:
@@ -422,7 +422,7 @@ workflows:
           requires:
             - deploy-frontend
             - deploy-backend    
-      - promote_to_production_and_clean_up:
+      - production_deployment_and_clean_up:
           requires:
             - smoke-test
            
