@@ -389,7 +389,7 @@ jobs:
               echo "stack deleted succesfully"
 
             fi  
-      - destroy-stack       
+      - destroy-environment        
 
 workflows:
   default:
