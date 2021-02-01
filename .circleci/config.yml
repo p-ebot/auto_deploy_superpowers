@@ -420,6 +420,7 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires:
+            - deploy-frontend
             - deploy-backend    
       - promote_to_production_and_clean_up:
           requires:
