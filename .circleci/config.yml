@@ -424,5 +424,5 @@ workflows:
             - deploy-backend    
       - promote_to_production_and_clean_up:
           requires:
-            - run_smoke_test
+            - smoke-test
            
