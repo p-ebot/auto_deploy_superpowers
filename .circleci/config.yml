@@ -344,7 +344,7 @@ jobs:
       - run:
           name: Smoke-test on backend
           command: |
-            Uif curl -s https://${BACKEND_URL}:3030/api/status
+            if curl -s https://${BACKEND_URL}:3030/api/status
             then
             return 1
             else
