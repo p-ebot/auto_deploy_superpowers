@@ -334,7 +334,7 @@ jobs:
       - run:
           name: smoke-test on frontend        
           command: |
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.ap-south-1.amazonaws.com/#/employees"            
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.us-east-1.amazonaws.com/#/employees"            
             if curl -s ${URL} | grep "Welcome"
             then
               return 1
@@ -342,15 +342,14 @@ jobs:
               return 0
             fi   
       - run:
-          name: Smoke test on backend
+          name: Smoke-test on backend
           command: |
-            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3.ap-south-1.amazonaws.com/#/employees"            
-            if curl -s ${URL} | grep "Welcome"
+            Uif curl -s https://${BACKEND_URL}:3030/api/status
             then
             return 1
             else
             return 0
-            fi    
+            fi
 
       - destroy-environment         
 #  cloudfront-update:
