@@ -344,11 +344,17 @@ jobs:
       - run:
           name: Smoke-test on backend
           command: |
-            if curl -s https://${BACKEND_URL}:3030/api/status
+            BACKEND_IP=$(aws cloudformation \
+              list-exports --query "Exports[?Name==\`backendIP\`].Value" \
+              --no-paginate --output text)
+            BACKEND_URL="http://${BACKEND_IP}:3030/api/status"
+            echo "Backend url: ${BACKEND_URL}"
+            curl -s ${BACKEND_URL} | grep "\"status\":\"ok\""
+            if [$(api_status) = "ok"]
             then
-            return 1
+              return 1
             else
-            return 0
+              return 0
             fi
 
       - destroy-environment         
