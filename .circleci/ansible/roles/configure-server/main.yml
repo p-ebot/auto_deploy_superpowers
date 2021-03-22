@@ -1,0 +1,20 @@
+---
+- name: "task to update the packages"
+  become: true
+  apt:
+    upgrade: "yes"
+
+- name: "install node packages"
+  become: true
+  apt:
+    name: ["nodejs", "npm"]
+    state: latest
+    update_cache: yes
+
+- name: "install pm2 package"
+  become: true
+  npm:
+    name: pm2
+    global: yes
+    production: yes
+    state: present
