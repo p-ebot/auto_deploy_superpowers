@@ -355,12 +355,11 @@ jobs:
       - run:
           name: Smoke-test on backend
           command: |
-            if curl -s https://${BACKEND_URL}:3030/api/status
-            then
-            return 1
-            else
-            return 0
-            fi
+            BACKEND_IP=$(aws ec2 describe-instances \
+            --filters "Name=tag:project, Values=udapeople" \
+            --query 'Reservations[*].Instances[*].PublicIpAddress' \
+            --output text)
+            curl "http://${BACKEND_IP}:3030/api/status"
 
       - destroy-environment         
 #  cloudfront-update:
