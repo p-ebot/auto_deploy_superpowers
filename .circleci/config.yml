@@ -355,11 +355,12 @@ jobs:
       - run:
           name: Smoke-test on backend
           command: |
-            BACKEND_IP=$(curl -H "token: IP-${CIRCLE_WORKFLOW_ID:0:9}" \
-                        --request GET https://api.memstash.io/values/IP)
-            URL="http://$BACKEND_IP:3030/api/status"
-            echo $URL
-            curl $URL
+            if curl -s https://${BACKEND_URL}:3030/api/status
+            then
+            return 1
+            else
+            return 0
+            fi
 
       - destroy-environment         
 #  cloudfront-update:
