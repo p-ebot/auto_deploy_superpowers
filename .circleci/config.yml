@@ -346,10 +346,7 @@ jobs:
       - run: 
           name: install dependencies
           command: |
-            apk add --no-cache curl
-            apk add --no-cache --upgrade bash
-            apk add --no-cache --update ansible
-            apk add --no-cache openssh-client
+            apk add --update curl
             pip3 install awscli
       - run:
           name: smoke-test on frontend        
@@ -364,12 +361,15 @@ jobs:
       - run:
           name: Smoke-test on backend
           command: |
-            BACKEND_IP=$(aws ec2 describe-instances \
-            --filters "Name=tag:project, Values=udapeople-backend-prod-${CIRCLE_WORKFLOW_ID:0:7}" \
-            --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --output text)
-            echo "${BACKEND_IP}"
-            curl "http://${BACKEND_IP}:3030/api/status"
+            chmod 777 set_backend_ip_env.sh
+            export BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:project,Values=udapeople" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+          
+            export API_URL=http://$BACKEND_IP:3030
+            echo $API_URL >> frontend/.env
+            echo $API_URL
 
       - destroy-environment         
 #  cloudfront-update:
