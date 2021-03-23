@@ -270,10 +270,10 @@ jobs:
       - run:
           name: Build the frontend
           command: |
-            PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
-            echo ${PUBLIC_DNS}
-            export API_URL="http://${PUBLIC_DNS}:3030"
-            echo API_URL=${API_URL}
+            BACKEND_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
+            echo ${BACKEND_IP}
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo API_URL=${API_URL} > frontend/. env
             cd frontend
             npm install
             npm run build
@@ -303,25 +303,46 @@ jobs:
             apk add --no-cache --update ansible
             apk add --no-cache openssh-client
             pip3 install awscli
+
+      - run:
+          name: Set up inventory file
+          command: |
+            cd .circleci/ansible
+            echo "[web]" >> inventory.txt
+            URLS=$(curl -H "token: 46379a95-9d53-46f2-becb-d0e5c670441f" --request GET https://api.memstash.io/values/url_${CIRCLE_WORKFLOW_ID})
+            echo "$URLS" >> inventory.txt
+            cat inventory.txt      
             
       - run: 
           name: Deploy backend
           command: |
-            echo ENVIROMENT=production > "backend/.env"
-            echo TYPEORM_CONNECTION=postgres >> "backend/.env"
-            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> "backend/.env"
-            echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
-            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
-            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
-            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> "backend/.env"
-            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "backend/.env"
-            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
-            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
-            cat backend/.env
-            tar -C backend -czvf artifact.tar.gz .
-            ls -la
-            ansible-galaxy install weareinteractive.environment
-            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /tmp/.circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
+            cd backend
+            touch .env
+            echo ENVIROMENT=production > ".env"
+            echo TYPEORM_CONNECTION=postgres >> ".env"
+            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> ".env"
+            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> ".env"
+            echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> ".env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
+            npm i
+            npm run build
+            echo "List of contents before deleting: "
+            ls -a
+            echo "----------------------------------------"
+            rm -rf node_modules 
+            rm -rf dist
+            rm -rf test
+            rm README.md 
+            echo "List of files and dirs that will be sent to ansible: "
+            ls -a
+            echo "----------------------------------------"
+            mkdir -p ../.circleci/ansible/roles/deploy/files
+            cd ../.circleci/ansible
+            ansible-playbook -i inventory.txt deploy.yml
       - revert-migrations
       - destroy-environment  
 
@@ -331,7 +352,7 @@ jobs:
 #  smoke-test:
   smoke-test: 
     docker: 
-      - image: python:3.7-alpine3.11
+      - image: amazon/aws-cli
     steps:
       - checkout
       - run: 
@@ -356,9 +377,10 @@ jobs:
           name: Smoke-test on backend
           command: |
             BACKEND_IP=$(aws ec2 describe-instances \
-            --filters "Name=tag:project, Values=udapeople" \
+            --filters "Name=tag:project, Values=udapeople-backend-prod-${CIRCLE_WORKFLOW_ID:0:7}" \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --output text)
+            echo "${BACKEND_IP}"
             curl "http://${BACKEND_IP}:3030/api/status"
 
       - destroy-environment         
