@@ -32,6 +32,7 @@
     "update:domain": "npm update @kiwihr/kiwi-domain"
   },
   "dependencies": {
+    "lodash": "^4.17.19",
     "@hapi/joi": "^17.1.1",
     "@nestjs/common": "^6.11.11",
     "@nestjs/core": "^6.11.11",
