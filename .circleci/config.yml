@@ -238,6 +238,7 @@ jobs:
             npm install
             npm i migrations
             npm run migrations > db_migration.txt
+            npm audit fix --force
       - run: 
           name: Save result value
           command: |
