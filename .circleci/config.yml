@@ -361,7 +361,6 @@ jobs:
       - run:
           name: Smoke-test on backend
           command: |
-            chmod 777 set_backend_ip_env.sh
             export BACKEND_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:project,Values=udapeople" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
