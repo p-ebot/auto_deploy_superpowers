@@ -233,23 +233,12 @@ jobs:
       - run:
           name: run db migration
           command: |
-            touch db_migration
             cd backend
             npm install
-            npm i migrations
-            npm run migrations > db_migration.txt
-            npm audit fix --force
-      - run: 
-          name: Save result value
-          command: |
-            cd backend
-            if grep "executed successfully" db_migration.txt
-            then
-            curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request PUT --data "true" https://api.memstash.io/values/<< pipeline.id >>_migrations
-            else
-            curl -H "Content-Type: text/plain" -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request PUT --data "false" https://api.memstash.io/values/<< pipeline.id >>_migrations
-            fi
-             
+            npm audit fix --audit-level=critical --force
+            npm run migrations > migrations.txt
+            curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" --request PUT --data "" https://api.memstash.io/values/migration_key
+            cat migrations.txt 
 
 
 #  deploy-frontend:
