@@ -270,9 +270,9 @@ jobs:
       - run:
           name: Build the frontend
           command: |
-            BACKEND_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
-            echo ${BACKEND_IP}
-            export API_URL="http://${BACKEND_IP}:3030"
+            PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
+            echo ${PUBLIC_DNS}
+            export API_URL="http://${PUBLIC_DNS}:3030"
             echo API_URL=${API_URL} > frontend/. env
             cd frontend
             npm install
@@ -316,33 +316,27 @@ jobs:
       - run: 
           name: Deploy backend
           command: |
-            cd backend
-            touch .env
-            echo ENVIROMENT=production > ".env"
-            echo TYPEORM_CONNECTION=postgres >> ".env"
-            echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> ".env"
-            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> ".env"
-            echo TYPEORM_MIGRATIONS=./src/migrations/*.ts >> ".env"
-            echo TYPEORM_HOST=$TYPEORM_HOST >> ".env"
-            echo TYPEORM_PORT=$TYPEORM_PORT >> ".env"
-            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
-            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
-            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
-            npm i
-            npm run build
-            echo "List of contents before deleting: "
-            ls -a
-            echo "----------------------------------------"
-            rm -rf node_modules 
-            rm -rf dist
-            rm -rf test
-            rm README.md 
-            echo "List of files and dirs that will be sent to ansible: "
-            ls -a
-            echo "----------------------------------------"
-            mkdir -p ../.circleci/ansible/roles/deploy/files
-            cd ../.circleci/ansible
-            ansible-playbook -i inventory.txt deploy.yml
+            INSTANCE_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://api.memstash.io/values/instance_ip)
+            echo ${INSTANCE_IP}
+            cd .circleci/ansible/
+            ls
+            echo ${INSTANCE_IP} >> ./inventory
+            cat ./inventory      
+            echo ENVIROMENT=production > "backend/.env"
+            echo TYPEORM_CONNECTION=postgres >> "backend/.env"
+            echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> "backend/.env"
+            echo TYPEORM_HOST=$TYPEORM_HOST >> "backend/.env"
+            echo TYPEORM_PORT=$TYPEORM_PORT >> "backend/.env"
+            echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> "backend/.env"
+            echo TYPEORM_MIGRATIONS=$TYPEORM_MIGRATIONS >> "backend/.env"
+            echo TYPEORM_MIGRATIONS_DIR=$TYPEORM_MIGRATIONS_DIR >> "backend/.env"
+            echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> "backend/.env"
+            echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> "backend/.env"
+            cat backend/.env
+            tar -C backend -czvf artifact.tar.gz .
+            ls -la
+            ansible-galaxy install weareinteractive.environment
+            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /tmp/.circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml
       - revert-migrations
       - destroy-environment  
 
