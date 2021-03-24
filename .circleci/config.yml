@@ -242,9 +242,9 @@ jobs:
             npm install
             npm fund
             npm audit fix --audit-level=critical --force
-            npm run migrations > migrations.txt
+            npm run migrations
             curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" --request PUT --data "" https://api.memstash.io/values/migration_key
-            cat migrations.txt 
+          
       - run:
           name: Send migration results to memstash
           command: |
