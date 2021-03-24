@@ -14,8 +14,6 @@
     "start:prod": "node dist/main.js",
     "start:hmr": "node dist/server",
     "lint": "tslint -p tsconfig.json -c tslint.json --fix",
-    "testdb": "db-migrate reset --env test1 && db-migrate up --env test1",
-    "test1": "npm run testdb && ./node_modules/.bin/gulp",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
@@ -34,7 +32,6 @@
     "update:domain": "npm update @kiwihr/kiwi-domain"
   },
   "dependencies": {
-    "lodash": "^4.17.19",
     "@hapi/joi": "^17.1.1",
     "@nestjs/common": "^6.11.11",
     "@nestjs/core": "^6.11.11",
