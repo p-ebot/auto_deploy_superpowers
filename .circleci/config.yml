@@ -210,6 +210,9 @@ jobs:
           name: Configure server with ansible
           no_output_timeout: 30m
           command: |
+            echo PWD
+            pwd
+            #ls -la
             echo ENVIROMENT=production > "backend/.env"
             echo TYPEORM_CONNECTION=postgres >> "backend/.env"
             echo TYPEORM_MIGRATIONS_DIR=./src/migrations >> "backend/.env"
@@ -233,13 +236,36 @@ jobs:
       - run:
           name: run db migration
           command: |
-            cd backend
+            cd backend 
             npm install
-            npm fund
-            npm audit fix --force
-            npm run migrations > migrations.txt
-            curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" --request PUT --data "" https://api.memstash.io/values/migration_key
-            cat migrations.txt 
+            npm run build
+            pwd
+            echo " THIS IS .env CONTENTS:"
+            cat .env
+            echo 'DUMP MIGRATIONS'
+            echo 'hello world!!' > migrations_dump.txt
+            npm run migrations >> migrations_dump.txt
+            echo "generated file!" 
+            pwd
+            ls -la
+            echo 'DISPLAY CONTENTS'
+            echo '*****************'
+            cat migrations_dump.txt
+      - run:
+          name: Send migration results to memstash
+          command: |
+            if grep -q "has been executed successfully" migrations.txt; then 
+              curl -H "Content-Type: text/plain" -H "token: 41becf56-e770-4630-a0e7-4f17f1d66667" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+            else
+              curl -H "Content-Type: text/plain" -H "token: 41becf56-e770-4630-a0e7-4f17f1d66667" --request PUT --data "0" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
+            fi
+            SUCCESS=$(curl -H "token: 41becf56-e770-4630-a0e7-4f17f1d66667" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            echo "${SUCCESS}" 
+      - save_cache:
+          paths: [backend/node_modules]
+          key: backend-build
+      - revert-migrations
+      - destroy-environment      
 
 
 #  deploy-frontend:
