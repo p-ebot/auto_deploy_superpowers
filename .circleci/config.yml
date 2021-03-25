@@ -239,8 +239,8 @@ jobs:
           name: run db migration
           command: |
             cd backend
-            sudo npm install
-            sudo npm run migrations > migration.txt
+            npm install
+            npm run migrations > migration.txt
             curl -H "Content-Type: text/plain" -H "token: ${MEMSTASH_TOKEN}" --request PUT --data "" https://api.memstash.io/values/migration_key
             cat migration.txt
 
