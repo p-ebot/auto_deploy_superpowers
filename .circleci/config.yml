@@ -280,7 +280,7 @@ jobs:
       - run:
           name: Build the frontend
           command: |
-            PUBLIC_DNS=$(curl -H "token: ${CIRCLE_WORKFLOW_ID}" --request GET https://api.memstash.io/values/public_dns)
+            PUBLIC_DNS=$(curl -H "token: 564ca3e8-c2c4-40a8-8510-84236d6ddf29" --request GET https://api.memstash.io/values/url_${CIRCLE_WORKFLOW_ID})
             echo ${PUBLIC_DNS}
             export API_URL="http://${PUBLIC_DNS}:3030"
             echo API_URL=${API_URL}
